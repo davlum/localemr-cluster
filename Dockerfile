@@ -24,9 +24,9 @@ RUN wget https://archive.apache.org/dist/incubator/livy/$LIVY_VERSION-incubating
   mkdir /opt/livy/logs
 
 # apache spark
-RUN wget https://archive.apache.org/dist/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-hadoop2.7.tgz -O /tmp/spark.tgz && \
+RUN wget https://archive.apache.org/dist/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-without-hadoop.tgz -O /tmp/spark.tgz && \
   tar -xvzf /tmp/spark.tgz -C /opt/ && \
-  mv /opt/spark-$SPARK_VERSION-bin-hadoop2.7 /opt/spark && \
+  mv /opt/spark-$SPARK_VERSION-bin-without-hadoop /opt/spark && \
   rm /tmp/spark.tgz
 
 COPY init /opt/docker-init
