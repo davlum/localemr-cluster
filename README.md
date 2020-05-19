@@ -1,8 +1,4 @@
-# Apache Livy Docker Container
-
-Based on the latest release of the [Apache Livy project](https://livy.incubator.apache.org/)
-
-------
+# Spark images for [localemr](https://github.com/davlum/localemr)
 
 ### Supported Versions:
 
@@ -26,7 +22,7 @@ variable.
 ### Usage:
 
 ```bash
-docker run -p 8998:8998 -e SPARK_MASTER=local[*] -e DEPLOY_MODE=client davlum/livy:0.7.0-spark2.4.4
+docker run -p 8998:8998 -e SPARK_MASTER="local[*]" -e DEPLOY_MODE=client davlum/localemr-spark2.4.4
 ```
 
 Visit http://localhost:8998
