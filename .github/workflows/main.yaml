@@ -51,7 +51,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: davlum/localemr-cluster
+          repository: davlum/localemr-container
           build_args: SPARK_VERSION=${{ matrix.spark }},LIVY_VERSION=${{ matrix.livy }},APACHE=${{ steps.apache.outputs.path }}
           tags: ${{ matrix.livy }}-spark${{ matrix.spark }}
 
