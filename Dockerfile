@@ -8,7 +8,7 @@ ENV HADOOP_VERSION 3.2.1
 
 
 RUN apt-get update -y && apt-get install -y \
-    default-jre-headless \  
+    openjdk-8-jre-headless \
     unzip \
     wget \
   && apt-get clean \
