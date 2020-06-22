@@ -34,6 +34,7 @@ RUN apt-get update -y && apt-get install -y \
 
 COPY init /opt/docker-init
 COPY conf/livy.conf /opt/livy/conf/livy.conf
+COPY conf/core-site.xml /opt/hadoop/etc/hadoop/core-site.xml
 COPY conf/s3_mocktest_demo_2.11-0.0.1.jar /opt/spark/jars/s3_mocktest_demo_2.11-0.0.1.jar
 
 EXPOSE 8998

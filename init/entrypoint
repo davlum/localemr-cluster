@@ -45,6 +45,7 @@ function livy_server_service(){
 function main(){
     validate
     write_config_options /opt/livy/conf/livy.conf
+    write_config_options /opt/hadoop/etc/hadoop/core-site.xml
     livy_server_service
     start 
     echo "done. now waiting for services."

@@ -2,7 +2,9 @@
 
 ### Supported Versions:
 
-To see which images are available see the [build matrix](https://github.com/davlum/livy-server-docker/blob/master/.github/workflows/main.yaml).
+To see which images are available see the [build matrix][1].
+The image includes https://github.com/sumitsu/s3_mocktest_demo JAR in
+order to communicate with mock instances of S3.
 
 ------
 
@@ -22,8 +24,9 @@ variable.
 ### Usage:
 
 ```bash
-docker run -p 8998:8998 -e SPARK_MASTER="local[*]" -e DEPLOY_MODE=client davlum/localemr-spark2.4.4
+docker run -p 8998:8998 -e SPARK_MASTER="local[*]" -e DEPLOY_MODE=client davlum/localemr-container:0.5.0-spark2.4.4
 ```
 
 Visit http://localhost:8998
 
+[1]: <https://github.com/davlum/livy-server-docker/blob/master/.github/workflows/main.yaml>
