@@ -30,7 +30,9 @@ RUN apt-get update -y && apt-get install -y \
   && mv /opt/spark-$SPARK_VERSION-bin-without-hadoop /opt/spark \
   && mkdir -p /tmp/spark-events \
   # S3 Integration
-  && wget -q -P /opt/spark/jars/ https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.11.804/aws-java-sdk-bundle-1.11.804.jar \
+  && wget -q -P /opt/spark/jars/ https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-s3/1.11.784/aws-java-sdk-s3-1.11.784.jar \
+  && wget -q -P /opt/spark/jars/ https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-core/1.11.784/aws-java-sdk-core-1.11.784.jar \
+  && wget -q -P /opt/spark/jars/ https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-dynamodb/1.11.784/aws-java-sdk-dynamodb-1.11.784.jar \
   && wget -q -P /opt/spark/jars/ https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/$HADOOP_VERSION/hadoop-aws-$HADOOP_VERSION.jar \
   && rm -r /tmp/*
 
