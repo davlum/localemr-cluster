@@ -27,7 +27,7 @@
   </property>
   <property>
     <name>fs.s3a.endpoint</name>
-    <value>http://s3:2000</value>
+    <value>${S3_ENDPOINT}</value>
   </property>
   <property>
     <name>fs.s3a.impl</name>

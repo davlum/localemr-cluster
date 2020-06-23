@@ -1,28 +1,8 @@
 #!/bin/bash
 set -o errexit -o nounset -o pipefail
 
-# global variables
-GLOBAL_VAR="xyz"
-
-##############################################################################
-# validate if all container variables are set
-##############################################################################
-function validate(){
-    vars="SPARK_MASTER DEPLOY_MODE"
-    for var in $vars; do
-        if [[ $(env | awk -F "=" '{print $1}' | grep "^$var$") != "$var" ]]; then
-            echo "$var not set but required."
-            return 1
-        fi
-    done
-    if [[ -z ${GLOBAL_VAR+x} ]]; then
-        echo "GLOBAL_VAR variable cannot be looked up."
-        return 1
-    fi       
-}
-
 function write_config_options(){
-    echo "write config options"
+    echo "write config options to $1"
     
     eval "echo \"$(cat $1)\"" > $1
 }
@@ -43,7 +23,6 @@ function livy_server_service(){
 }
 
 function main(){
-    validate
     write_config_options /opt/livy/conf/livy.conf
     write_config_options /opt/hadoop/etc/hadoop/core-site.xml
     livy_server_service
