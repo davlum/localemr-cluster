@@ -1,33 +1,35 @@
 #!/bin/bash
 set -o errexit -o nounset -o pipefail
 
+source .env
+
 function write_config_options(){
     echo "write config options to $1"
-    
     eval "echo \"$(cat $1)\"" > $1
 }
 
-
 function livy_server_service(){
-    export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-    export HADOOP_HOME=/opt/hadoop
-    export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
-    export SPARK_HOME=/opt/spark
-    export PATH=${SPARK_HOME}/bin:${HADOOP_HOME}/bin:$PATH
-    export SPARK_DIST_CLASSPATH=$(hadoop classpath)
     echo "starting Livy Server!"
     /opt/livy/bin/livy-server start
 
-    # whatever blocking call 
+    # whatever blocking call
     tail -f /dev/null
 }
 
 function main(){
-    write_config_options /opt/livy/conf/livy.conf
-    write_config_options /opt/hadoop/etc/hadoop/core-site.xml
-    livy_server_service
-    start 
-    echo "done. now waiting for services."
+  case "$1" in
+    livy)
+      write_config_options /opt/livy/conf/livy.conf
+      write_config_options /opt/hadoop/etc/hadoop/core-site.xml
+      livy_server_service
+      start
+      echo "done. now waiting for services."
+      ;;
+    *)
+      exec "$@"
+      ;;
+  esac
 }
 
-main
+main $1
+

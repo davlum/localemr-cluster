@@ -24,7 +24,7 @@ variable.
 ### Usage:
 
 ```bash
-docker run -p 8998:8998 -e SPARK_MASTER="local[*]" -e DEPLOY_MODE=client davlum/localemr-container:0.5.0-spark2.4.4
+docker run -p 8998:8998 davlum/localemr-container:0.5.0-spark2.4.4
 ```
 
 Visit http://localhost:8998
