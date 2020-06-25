@@ -24,12 +24,16 @@ RUN apt-get update -y && apt-get install -y \
   && wget -q -O /tmp/spark.tgz https://archive.apache.org/dist/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-without-hadoop.tgz \
   && tar -xzf /tmp/spark.tgz -C /opt/ \
   && mv /opt/spark-$SPARK_VERSION-bin-without-hadoop /opt/spark \
-  && mkdir -p /tmp/spark-events
+  && mkdir -p /tmp/spark-events \
+  && mv /opt/hadoop/share/hadoop/tools/lib/aws-java-sdk-bundle-1.11.375.jar /opt/hadoop/share/hadoop/common/aws-java-sdk-bundle-1.11.375.jar \
+  && mv /opt/hadoop/share/hadoop/tools/lib/hadoop-aws-3.2.1.jar /opt/hadoop/share/hadoop/common/hadoop-aws-3.2.1.jar \
+  && rm -r /opt/hadoop/share/hadoop/tools \
+  && rm -r /tmp/*
 
 COPY init /opt/docker-init
 COPY conf/livy.conf /opt/livy/conf/livy.conf
 COPY conf/core-site.xml /opt/hadoop/etc/hadoop/core-site.xml
-COPY conf/s3_mocktest_demo_2.11-0.0.1.jar /opt/hadoop/share/hadoop/tools/lib/s3_mocktest_demo_2.11-0.0.1.jar
+COPY conf/s3_mocktest_demo_2.11-0.0.1.jar /opt/hadoop/share/hadoop/common/s3_mocktest_demo_2.11-0.0.1.jar
 
 # Runtime env vars
 ENV S3_ENDPOINT=""
