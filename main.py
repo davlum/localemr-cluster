@@ -98,7 +98,7 @@ def poll_step(process_q: Queue, status_q: Queue):
 
 
 def run_step(batch_id, cli_args):
-    base_log_dir = f'var/log/steps/{batch_id}'
+    base_log_dir = f'/var/log/steps/{batch_id}'
     os.makedirs(base_log_dir, exist_ok=True)
     stderr_path = f'{base_log_dir}/stderr.log'
     stdout_path = f'{base_log_dir}/stdout.log'
