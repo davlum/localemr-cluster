@@ -41,7 +41,7 @@ jobs:
       - name: Build the Docker image
         run: docker build -t davlum/localemr-container:ci --build-arg SPARK_VERSION=${{ matrix.spark }} .
       - name: Run the server
-        run: docker run --name localemr-container davlum/localemr-container:ci
+        run: docker run -d --name localemr-container davlum/localemr-container:ci
       - name: Run tests
         run: docker exec -T localemr-container pipenv run pytest
       - name: Push to Dockerhub
