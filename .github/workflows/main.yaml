@@ -36,5 +36,5 @@ jobs:
       - name: Run the server
         run: docker run -d --name localemr-container davlum/localemr-container:ci
       - name: Run tests
-        run: docker exec -T localemr-container pipenv run pytest
+        run: docker exec localemr-container pipenv run pytest
 
