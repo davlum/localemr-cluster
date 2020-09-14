@@ -37,3 +37,9 @@ def test_get_batch_not_found():
     r = requests.get('http://localhost:8998/batch/4')
     assert r.status_code == 404
     assert r.json()['error_message'] == "Batch `4` not found."
+
+
+def test_health_check():
+    r = requests.get('http://localhost:8998/health')
+    assert r.status_code == 200
+    assert r.json()['status'] == "OK"
