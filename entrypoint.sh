@@ -10,6 +10,10 @@ function write_config_options(){
 
 function main(){
   write_config_options /opt/hadoop/etc/hadoop/core-site.xml
+  export HADOOP_CLASSPATH
+  export SPARK_DIST_CLASSPATH
+  HADOOP_CLASSPATH="/opt/hadoop/share/hadoop/tools/lib/*:$(hadoop classpath)"
+  SPARK_DIST_CLASSPATH=$(hadoop classpath)
   python3 main.py "$@"
 }
 
