@@ -86,6 +86,11 @@ def get_batch(batch_id):
     }
 
 
+@get('/health')
+def get_health():
+    return {"status": "OK"}
+
+
 def poll_step(process_q: Queue, status_q: Queue):
     while True:
         if process_q.empty():
