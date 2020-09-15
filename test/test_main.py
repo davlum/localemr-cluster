@@ -4,9 +4,14 @@ from main import FOUR_HUNDRED_ERROR, Status
 
 
 def test_post_batch():
-    r = requests.post('http://localhost:8998/batch/1', json={'args': ['ls', '-lthra']})
+    url = 'http://localhost:8998/batch/1'
+    r = requests.post(url, json={'args': ['sleep', '20', '&&', 'ls', '-lthra']})
     r.raise_for_status()
     assert r.json() == {'id': '1', 'status': 'PENDING', 'log': None}
+    while r.json()['status'] == 'PENDING':
+        time.sleep(3)
+        r = requests.get('http://localhost:8998/batch/1')
+    assert r.json()['status'] == 'RUNNING'
 
 
 def test_post_bad_batch_raises():
