@@ -3,15 +3,33 @@ import requests
 from main import FOUR_HUNDRED_ERROR, Status
 
 
-def test_post_batch():
-    url = 'http://localhost:8998/batch/1'
-    r = requests.post(url, json={'args': ['sleep', '20', '&&', 'ls', '-lthra']})
+def test_post_batch_succeeds():
+    url = 'http://localhost:8998/batch/sleep-1'
+    r = requests.post(url, json={'args': ['sleep', '10']})
     r.raise_for_status()
-    assert r.json() == {'id': '1', 'status': 'PENDING', 'log': None}
+    assert r.json() == {'id': 'sleep-1', 'status': 'PENDING', 'log': None}
     while r.json()['status'] == 'PENDING':
         time.sleep(3)
-        r = requests.get('http://localhost:8998/batch/1')
+        r = requests.get('http://localhost:8998/batch/sleep-1')
+        r.raise_for_status()
     assert r.json()['status'] == 'RUNNING'
+    while r.json()['status'] == 'RUNNING':
+        time.sleep(3)
+        r = requests.get('http://localhost:8998/batch/sleep-1')
+        r.raise_for_status()
+    assert r.json()['status'] == 'SUCCEEDED'
+
+
+def test_post_batch_fails():
+    url = 'http://localhost:8998/batch/sleep-2'
+    r = requests.post(url, json={'args': ['sleep', '20', '&&', 'ls', '-lthra']})
+    r.raise_for_status()
+    assert r.json() == {'id': 'sleep-2', 'status': 'PENDING', 'log': None}
+    while r.json()['status'] == 'PENDING':
+        time.sleep(3)
+        r = requests.get('http://localhost:8998/batch/sleep-2')
+        r.raise_for_status()
+    assert r.json()['status'] == 'FAILED'
 
 
 def test_post_bad_batch_raises():
@@ -30,12 +48,12 @@ def test_double_post_batch_raises():
 
 
 def test_get_batch():
-    r = requests.get('http://localhost:8998/batch/1')
+    r = requests.get('http://localhost:8998/batch/sleep-1')
     while r.json()['status'] in (str(Status.RUNNING), str(Status.PENDING)):
         time.sleep(2)
-        r = requests.get('http://localhost:8998/batch/1')
+        r = requests.get('http://localhost:8998/batch/sleep-1')
 
-    assert r.json() == {'id': '1', 'status': 'SUCCEEDED', 'log': None}
+    assert r.json() == {'id': 'sleep-1', 'status': 'SUCCEEDED', 'log': None}
 
 
 def test_get_batch_not_found():
