@@ -135,18 +135,11 @@ def run_batch(status_q: Queue, batch: Batch):
     stderr_path = f'{base_log_dir}/stderr.log'
     stdout_path = f'{base_log_dir}/stdout.log'
     with open(stderr_path, 'w') as stderr, open(stdout_path, 'w') as stdout, \
-            subprocess.Popen(batch.cli_args, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                             universal_newlines=True, env=os.environ) as proc:
+            subprocess.Popen(batch.cli_args, stdout=stdout, stderr=stderr, env=os.environ, bufsize=8192) as proc:
+
         batch.status = Status.RUNNING
         batch.pid = proc.pid
         status_q.put(batch)
-
-        for line in proc.stdout:
-            sys.stdout.write(line)
-            stdout.write(line)
-        for line in proc.stderr:
-            sys.stderr.write(line)
-            stderr.write(line)
 
     return_code = proc.wait()
     with open(stderr_path) as f:
