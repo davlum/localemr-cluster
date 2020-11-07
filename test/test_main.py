@@ -5,9 +5,9 @@ from main import FOUR_HUNDRED_ERROR, Status
 
 def test_post_batch_succeeds():
     url = 'http://localhost:8998/batch/sleep-1'
-    r = requests.post(url, json={'args': ['sleep', '10']})
+    r = requests.post(url, json={'exec': 'sleep', 'args': ['10']})
     r.raise_for_status()
-    assert r.json() == {'id': 'sleep-1', 'status': 'PENDING', 'log': None}
+    assert r.json() == {'id': 'sleep-1', 'status': 'PENDING', 'log': None, 'pid': None, 'args': ['sleep', '10']}
     while r.json()['status'] == 'PENDING':
         time.sleep(3)
         r = requests.get(url)
