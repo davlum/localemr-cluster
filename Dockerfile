@@ -1,39 +1,30 @@
-########
-# Base #
-########
+# This is a hack to persist env vars through multi layer stages
 FROM ubuntu:20.10 AS base
 
-ENV SPARK_MASTER local[*]
-ENV DEPLOY_MODE client
-ENV HADOOP_VERSION 3.2.1
-ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
-ENV HADOOP_HOME /opt/hadoop
-ENV SPARK_HOME /opt/spark
-ENV HADOOP_CONF_DIR $HADOOP_HOME/etc/hadoop
-ENV PATH ${HADOOP_HOME}/bin:${SPARK_HOME}/bin:$PATH
-ENV AWS_ACCESS_KEY_ID TESTING
-ENV AWS_SECRET_ACCESS_KEY TESTING
-ENV S3_ENDPOINT http://s3:2000
-
-WORKDIR /opt/localemr
-
-COPY . .
-
-RUN apt-get update -y && apt-get install -y \
-    python3-pip \
-    openjdk-8-jre-headless \
-  && apt-get clean \
-  && apt-get autoclean \
-  && pip install pipenv \
-  && cd /opt/localemr \
-  && pipenv install
-
-########################
-# Fetch and build deps #
-########################
-FROM base AS build
-
 ARG SPARK_VERSION
+ENV SPARK_VERSION=$SPARK_VERSION
+
+ENV HADOOP_VERSION=3.2.1
+
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+
+ENV HADOOP_HOME=/opt/hadoop
+ENV HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
+
+ENV SPARK_MASTER=local[*]
+ENV DEPLOY_MODE=client
+ENV SPARK_HOME=/opt/spark
+
+ENV PATH=${HADOOP_HOME}/bin:${SPARK_HOME}/bin:$PATH
+
+ENV AWS_ACCESS_KEY_ID=TESTING
+ENV AWS_SECRET_ACCESS_KEY=TESTING
+ENV S3_ENDPOINT=http://s3:2000
+
+################
+# Build Hadoop #
+################
+FROM base AS buildHadoop
 
 RUN apt-get update -y && apt-get install -y openjdk-8-jdk wget && apt-get clean && apt-get autoclean
 
@@ -59,25 +50,34 @@ RUN mkdir /opt/s3_client_factory_classes
 RUN javac -classpath $(hadoop classpath) -d /opt/s3_client_factory_classes /opt/NonChunkedDefaultS3ClientFactory.java
 RUN jar -cvf /opt/non-chunked-default-s3-clientfactory.jar -C /opt/s3_client_factory_classes/ .
 
+#############
+# Build Rust #
+#############
 
-######################
-# Fetch runtime deps #
-######################
+FROM rust:1.47 AS buildRust
+
+WORKDIR /usr/src/app
+COPY . .
+RUN cargo test && cargo install --path .
+
+########
+# App #
+########
 FROM base AS app
 
-RUN mkdir /opt/hadoop \
-  && mkdir /opt/spark
+RUN apt-get update -y \
+ && apt-get install -y openjdk-8-jre-headless \
+ && apt-get clean
 
-COPY --from=build /opt/hadoop /opt/hadoop/
-COPY --from=build /opt/spark /opt/spark/
-COPY --from=build /opt/non-chunked-default-s3-clientfactory.jar /opt/hadoop/share/hadoop/common/
+WORKDIR /opt/localemr
+
+COPY --from=buildHadoop /opt/hadoop /opt/hadoop/
+COPY --from=buildHadoop /opt/spark /opt/spark/
+COPY --from=buildHadoop /opt/non-chunked-default-s3-clientfactory.jar /opt/hadoop/share/hadoop/common/
 COPY conf/core-site.xml /opt/hadoop/etc/hadoop/core-site.xml
+COPY --from=buildRust /usr/local/cargo/bin/localemr-container /usr/local/bin/localemr-container
+COPY entrypoint.sh .
 
-CMD ["pipenv", "run", "./entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]
 
-###################
-# Fetch test deps #
-####################
-FROM app AS test
-
-RUN pipenv install --dev
+CMD ["livy"]

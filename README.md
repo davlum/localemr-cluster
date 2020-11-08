@@ -17,7 +17,7 @@ of the aforementioned `NonChunkedDefaultS3ClientFactory.java` class.
 
 ### Configuration
 
-Some environment variables can be overriden to communicate with an unmocked S3.
+Some environment variables can be overridden to communicate with an unmocked S3.
 ```.env
 AWS_ACCESS_KEY_ID=TESTING
 AWS_SECRET_ACCESS_KEY=TESTING
@@ -31,7 +31,6 @@ S3_ENDPOINT=http://s3:2000
 ```bash
 docker run -p 8998:8998 davlum/localemr-container:latest-spark2.4.4
 ```
-
 
 [1]: <https://github.com/davlum/livy-server-docker/blob/master/.github/workflows/main.yaml>
 [2]: <https://github.com/davlum/localemr>

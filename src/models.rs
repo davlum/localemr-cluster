@@ -8,9 +8,9 @@ pub type Db = Arc<Mutex<Vec<Batch>>>;
 
 pub fn blank_db() -> Db { Arc::new(Mutex::new(Vec::new())) }
 
-pub static LOG_DIR: &str = "var/log/steps/";
+pub static LOG_DIR: &str = "/var/log/steps/";
 
-#[derive(Debug, Deserialize, Serialize, Clone, Copy)]
+#[derive(Debug, Deserialize, Serialize, Clone, Copy, PartialEq, Eq)]
 pub enum Status {
     PENDING,
     RUNNING,
@@ -19,27 +19,23 @@ pub enum Status {
     CANCELLED,
 }
 
-#[derive(Debug, Deserialize, Serialize, Clone)]
-pub struct BatchRuntimeInfo {
-    pub status: Status,
-    pub stderr: String,
-    pub stdout: String,
-}
 
-#[derive(Debug, Deserialize, Serialize, Clone)]
-pub struct Batch<'a> {
+#[derive(Debug, Deserialize, Serialize, Clone, PartialEq, Eq)]
+pub struct Batch {
     pub id: String,
     pub exec: String,
     pub args: Vec<String>,
-    pub runtime_info: Option<&'a BatchRuntimeInfo>,
+    pub status: Option<Status>,
+    pub log: Option<String>,
 }
 
 
 
 impl Batch {
-    pub fn set_batch_info(&mut self, status: Status) {
-        let mut runtime_info = self.runtime_info;
-
-        self.runtime_info = Some(BatchRuntimeInfo.)
+    pub fn set_status(&mut self, status: Status) {
+        self.status = Some(status);
+    }
+    pub fn set_log(&mut self, log: String) {
+        self.log = Some(log);
     }
 }
