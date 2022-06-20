@@ -1,4 +1,4 @@
-FROM ubuntu:20.10
+FROM ubuntu:22.10
 
 # Build time env vars
 ARG SPARK_VERSION
