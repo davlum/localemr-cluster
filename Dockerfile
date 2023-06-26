@@ -1,9 +1,9 @@
 FROM ubuntu:22.10
 
 # Build time env vars
-ARG SPARK_VERSION
-ENV HADOOP_VERSION 3.2.1
-ENV LIVY_VERSION 0.5.0
+ENV SPARK_VERSION 3.3.0
+ENV HADOOP_VERSION 3.3.3
+ENV LIVY_VERSION 0.7.1
 
 RUN apt-get update -y && apt-get install -y \
     openjdk-8-jre-headless \
@@ -11,10 +11,11 @@ RUN apt-get update -y && apt-get install -y \
     wget \
   && apt-get clean \
   # Apache Livy
-  && wget -q -O /tmp/livy.zip https://archive.apache.org/dist/incubator/livy/$LIVY_VERSION-incubating/livy-$LIVY_VERSION-incubating-bin.zip \
+  && wget -q -O /tmp/livy.zip https://archive.apache.org/dist/incubator/livy/$LIVY_VERSION-incubating/apache-livy-$LIVY_VERSION-incubating-bin.zip \
   && unzip /tmp/livy.zip -d /opt/ \
-  && mv /opt/livy-$LIVY_VERSION-incubating-bin /opt/livy \
-  && mkdir /opt/livy/logs \
+  && mv /opt/apache-livy-$LIVY_VERSION-incubating-bin /opt/livy \
+  && mkdir -p /opt/livy \
+  && mkdir -p /opt/livy/logs \
   # Apache Hadoop
   && wget -q -O /tmp/hadoop.tgz http://archive.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz \
   && tar -xzf /tmp/hadoop.tgz -C /opt/ \
@@ -25,8 +26,8 @@ RUN apt-get update -y && apt-get install -y \
   && tar -xzf /tmp/spark.tgz -C /opt/ \
   && mv /opt/spark-$SPARK_VERSION-bin-without-hadoop /opt/spark \
   && mkdir -p /tmp/spark-events \
-  && mv /opt/hadoop/share/hadoop/tools/lib/aws-java-sdk-bundle-1.11.375.jar /opt/hadoop/share/hadoop/common/aws-java-sdk-bundle-1.11.375.jar \
-  && mv /opt/hadoop/share/hadoop/tools/lib/hadoop-aws-3.2.1.jar /opt/hadoop/share/hadoop/common/hadoop-aws-3.2.1.jar \
+  && mv /opt/hadoop/share/hadoop/tools/lib/aws-java-sdk-bundle-1.11.1026.jar /opt/hadoop/share/hadoop/common/aws-java-sdk-bundle-1.11.1026.jar \
+  && mv /opt/hadoop/share/hadoop/tools/lib/hadoop-aws-3.3.3.jar /opt/hadoop/share/hadoop/common/hadoop-aws-3.3.3.jar \
   && rm -r /opt/hadoop/share/hadoop/tools \
   && rm -r /tmp/*
 
