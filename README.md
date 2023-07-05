@@ -21,8 +21,11 @@ variable.
 
 ------
 
-### Usage:
-
+### Usage
+```bash
+docker run -p 8998:8998 davlum/localemr-container:0.5.0-spark2.4.4
+```
+### Usage for EMR 6.9.0
 ```bash
 docker run -p 8998:8998 sumitzet/localemr-container:0.7.1-spark3.3.0
 ```
